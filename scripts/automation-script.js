@@ -27,7 +27,8 @@ class AutomationScript {
         });
         return arr;
       }
-      console.log(
+
+      document.getElementById("outputarea").innerHTML = JSON.stringify(
         parseToCSV(event.target.result, this.headingPart, this.bodyPart)
       );
     };
