@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="styles/text-animation.css" />
     <title>Document</title>
     <script src="scripts/jquery-csv.js"></script>
-    <script src="scripts/automation-script.js"></script>
   </head>
   <style>
     /* Google chrome */
@@ -149,12 +148,15 @@
         </a>
         <div class="d-flex">
           <small class="text-light navbar-brand">
-            <small style="font-size: 10px"
+            <small style="font-size: 13px"
               >Developed by Vivek Vijayan © 2022</small
             >
           </small>
+          <a href="mailto:'vivek.vijayan@serco.com'" style="margin-right: 10px">
+            <button class="btn btn-outline-info">How?</button>
+          </a>
           <a href="mailto:'vivek.vijayan@serco.com'">
-            <button class="btn btn-outline-danger">Help</button>
+            <button class="btn btn-outline-danger">Help!</button>
           </a>
         </div>
       </div>
@@ -171,38 +173,45 @@
             in hyperview mode
           </small>
         </div>
-        <div class="col-sm-6 alert alert-secondary">
+        <div class="col-sm-6 alert alert-dark">
           <p class="text-dark">Classic Dimension Upload</p>
-          <div class="row">
-            <div class="col-sm-6">
-              <select class="form-select" aria-label="Default select example" id="masterData">
-                <option selected>Select the master data template</option>
-                <option value="ENTITY">ENTITY</option>
-                <option value="B_ENTITY">B_ENTITY</option>
-                <option value="ACCOUNT">ACCOUNT</option>
-                <option value="A_ACCOUNT">A_ACCOUNT</option>
-              </select>
-            </div>
-            <div class="col-sm-6">
-              <div class="input-group">
-                <input
-                  type="file"
-                  class="form-control"
-                  id="uploadedFile"
-                  aria-describedby="inputGroupFileAddon04"
-                  aria-label="Upload"
-                />
-                <button
-                  class="btn btn-success"
-                  type="button"
-                  id="inputGroupFileAddon04"
-                  onclick="activateMasterData()"
+          <form id="getDataForm">
+            <div class="row">
+              <div class="col-sm-5">
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  id="masterData"
                 >
-                  Process
-                </button>
+                  <option selected>Select the master data template</option>
+                  <option value="ENTITY">ENTITY</option>
+                  <option value="B_ENTITY">B_ENTITY</option>
+                  <option value="ACCOUNT">ACCOUNT</option>
+                  <option value="A_ACCOUNT">A_ACCOUNT</option>
+                </select>
+              </div>
+              <div class="col-sm-7">
+                <div class="input-group">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="uploadedFile"
+                    aria-describedby="inputGroupFileAddon04"
+                    aria-label="Upload"
+                    accept=".csv"
+                    required
+                  />
+                  <button
+                    class="btn btn-success"
+                    type="submit"
+                    id="inputGroupFileAddon04"
+                  >
+                    Process
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
@@ -211,6 +220,9 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="scripts/text-animation.js"></script>
+    <script src="scripts/require.js"></script>
+    <script src="scripts/automation-script.js"></script>
   </body>
 </html>
