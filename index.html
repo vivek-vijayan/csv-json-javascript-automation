@@ -11,6 +11,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="styles/text-animation.css" />
+    <link rel="stylesheet" href="styles/main.css">
     <title>Document</title>
     <script src="scripts/jquery-csv.js"></script>
   </head>
@@ -110,9 +111,17 @@
                     required
                   />
                   <button
-                    class="btn btn-success"
+                    class="btn btn-warning"
                     type="submit"
                     id="inputGroupFileAddon04"
+                  >
+                    Upload
+                  </button>
+                  <button
+                    class="btn btn-success"
+                    type="button"
+                    id="process"
+                    onclick="processMasterData()"
                   >
                     Process
                   </button>

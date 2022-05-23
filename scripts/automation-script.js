@@ -1,6 +1,7 @@
 // master data upload - Script
 
 class AutomationScript {
+  static masterDataOutput = "";
   constructor(dimension, filetype = "csv") {
     this.dimension = dimension;
     this.filetype = filetype;
@@ -9,8 +10,23 @@ class AutomationScript {
     this.bodyPart = {};
   }
 
+  generateIcons(outputArea) {
+    automationObject.masterDataOutput.forEach((element) => {
+      let area = document.createElement("button");
+      area.classList.add("btn");
+      area.classList.add("btn-success");
+      area.classList.add("button-margin");
+      let xDATA = element['"ID"'];
+      let data = document.createTextNode(
+        xDATA.toString().replace('"', "").replace('"', "")
+      );
+      area.appendChild(data);
+      outputArea.appendChild(area);
+    });
+  }
+
   // Function to fetch the master data from the user
-  getMasterDataFromUser(data) {
+  async getMasterDataFromUser(data) {
     console.log("Fetching the master data from the user....");
     var fileVariable = new FileReader();
     fileVariable.onload = function (event) {
@@ -28,9 +44,13 @@ class AutomationScript {
         return arr;
       }
 
-      document.getElementById("outputarea").innerHTML = JSON.stringify(
-        parseToCSV(event.target.result, this.headingPart, this.bodyPart)
+      var output = parseToCSV(
+        event.target.result,
+        this.headingPart,
+        this.bodyPart
       );
+      automationObject.masterDataOutput = output;
+      console
     };
     fileVariable.readAsText(data);
     swal(
@@ -40,10 +60,15 @@ class AutomationScript {
     );
   }
 }
-//  -- END OF CLASS
-// GLOBAL FUNCTIONS ------------------------------------------
+//  -- END OF CLASS ------------------------------------------
+
+// GLOBAL VARIABLE ------------------------------------------
+var automationObject = new AutomationScript("dimension");
+
+// -- GLOBAL FUNCTIONS ---------------------------------------
 function activateMasterData() {
   let dimension = document.getElementById("masterData").value;
+  automationObject = new AutomationScript(dimension);
   if (dimension === "Select the master data template") {
     swal(
       "Dimension template required",
@@ -52,7 +77,6 @@ function activateMasterData() {
     );
     return;
   }
-  let automationObject = new AutomationScript(dimension);
   if (document.getElementById("uploadedFile").files[0]) {
     automationObject.getMasterDataFromUser(
       document.getElementById("uploadedFile").files[0]
@@ -60,7 +84,12 @@ function activateMasterData() {
   }
 }
 
-// -----------------------------------------------------------
+function processMasterData() {
+  let outputArea = document.getElementById("outputarea");
+  automationObject.generateIcons(outputArea);
+}
+
+// -----------------------------------------------------------   automationObject.generateIcons()
 const getDataFormTemp = document.getElementById("getDataForm");
 getDataFormTemp.addEventListener("submit", function (e) {
   e.preventDefault();
