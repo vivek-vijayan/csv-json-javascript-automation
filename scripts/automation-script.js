@@ -2,6 +2,11 @@
 
 class AutomationScript {
   static masterDataOutput = "";
+
+  // Static member
+  static parenth1 = ["1"];
+  static parenth2 = ["1"];
+
   constructor(dimension, filetype = "csv") {
     this.dimension = dimension;
     this.filetype = filetype;
@@ -23,6 +28,32 @@ class AutomationScript {
       area.appendChild(data);
       outputArea.appendChild(area);
     });
+  }
+
+  // Funcitonality to fetch the parents availabe in the updated heirarchy
+  fetchParentH1() {
+    automationObject.parenth1 = []
+    automationObject.masterDataOutput.forEach((element) => {
+      try {
+        let parentElement = element["'Management'"].toString().replace('"', "").replace('"', "");
+        if (!automationObject.parenth1.includes(parentElement)) {
+          automationObject.parenth1.push(parentElement);
+          let optionElement = document.createElement("option");
+          optionElement.value = parentElement;
+          optionElement.innerHTML = parentElement;
+          let selectionMember = document.getElementById("parenth1select");
+          selectionMember.appendChild(optionElement);
+        }
+      } catch (error) {
+        console.log(error.toString());
+      }
+    });
+    // document.getElementById("outputarea").innerHTML = automationObject.parenth1;
+    swal(
+      "Extract  Data Process",
+      "Data has been processed successfully",
+      "success"
+    );
   }
 
   // Function to fetch the master data from the user
@@ -50,7 +81,8 @@ class AutomationScript {
         this.bodyPart
       );
       automationObject.masterDataOutput = output;
-      console
+      automationObject.parenth1 = [];
+      automationObject.parenth2 = [];
     };
     fileVariable.readAsText(data);
     swal(
@@ -66,8 +98,22 @@ class AutomationScript {
 var automationObject = new AutomationScript("dimension");
 
 // -- GLOBAL FUNCTIONS ---------------------------------------
+
+function showPopupAlert(message) {
+  let alertArea = document.getElementById("alert");
+  alertArea.style.display = "block";
+  alertArea.innerHTML = message;
+}
+
+function hidePopupAlert() {
+  let alertArea = document.getElementById("alert");
+  alertArea.style.display = "none";
+}
+
 function activateMasterData() {
+  showPopupAlert("Uploading and Processing the Dimension... please wait");
   let dimension = document.getElementById("masterData").value;
+  document.getElementById("showdim").innerHTML = dimension;
   automationObject = new AutomationScript(dimension);
   if (dimension === "Select the master data template") {
     swal(
@@ -82,11 +128,27 @@ function activateMasterData() {
       document.getElementById("uploadedFile").files[0]
     );
   }
+  hidePopupAlert();
+}
+
+function alphabetizeList() {
+  var sel = $(listField);
+  var selected = sel.val(); // cache selected value, before reordering
+  var opts_list = sel.find("option");
+  opts_list.sort(function (a, b) {
+    return $(a).text() > $(b).text() ? 1 : -1;
+  });
+  sel.html("").append(opts_list);
+  sel.val(selected); // set cached selected value
 }
 
 function processMasterData() {
+  showPopupAlert("Processing the dimension, please wait....");
   let outputArea = document.getElementById("outputarea");
   automationObject.generateIcons(outputArea);
+  automationObject.fetchParentH1();
+  //alphabetizeList("select.parenth1select option");
+  hidePopupAlert();
 }
 
 // -----------------------------------------------------------   automationObject.generateIcons()
