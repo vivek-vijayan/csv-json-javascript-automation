@@ -4,8 +4,8 @@ class AutomationScript {
   static masterDataOutput = "";
 
   // Static member
-  static parenth1 = ["1"];
-  static parenth2 = ["1"];
+  static parentcheck = [];
+  static parenth = [];
 
   constructor(dimension, filetype = "csv") {
     this.dimension = dimension;
@@ -13,9 +13,25 @@ class AutomationScript {
     console.log("Automation activated on the dimension: " + this.dimension);
     this.headingPart = new Array();
     this.bodyPart = {};
+    this.parentcheck = ["1"];
+    this.dimensionParentStructure = {
+      ENTITY: [
+        "Management",
+        "Hyperion BHI",
+        "Stat Structure",
+        "MGNT Excl JV",
+        "Joint Venture Only",
+        "MGNT Equity Acc",
+        "JV Equity Acc",
+      ],
+      FLOW: ["PARENTH1", "PARENTH2", "PARENTH3", "PARENTH4"],
+    };
   }
 
   generateIcons(outputArea) {
+    while (outputArea.hasChildNodes()) {
+      outputArea.removeChild(outputArea.firstChild);
+    }
     automationObject.masterDataOutput.forEach((element) => {
       let area = document.createElement("button");
       area.classList.add("btn");
@@ -31,29 +47,129 @@ class AutomationScript {
   }
 
   // Funcitonality to fetch the parents availabe in the updated heirarchy
-  fetchParentH1() {
-    automationObject.parenth1 = []
-    automationObject.masterDataOutput.forEach((element) => {
+  populateParentList() {
+    let selectionMember = document.getElementById("parentselect");
+    while (selectionMember.hasChildNodes()) {
+      selectionMember.removeChild(selectionMember.firstChild);
+    }
+
+    automationObject.dimensionParentStructure[
+      automationObject.dimension
+    ].forEach((element) => {
       try {
-        let parentElement = element["'Management'"].toString().replace('"', "").replace('"', "");
-        if (!automationObject.parenth1.includes(parentElement)) {
-          automationObject.parenth1.push(parentElement);
-          let optionElement = document.createElement("option");
-          optionElement.value = parentElement;
-          optionElement.innerHTML = parentElement;
-          let selectionMember = document.getElementById("parenth1select");
-          selectionMember.appendChild(optionElement);
-        }
+        let parentElement = element;
+        automationObject.parentcheck.push(parentElement);
+        let optionElement = document.createElement("option");
+        optionElement.value = parentElement;
+        optionElement.innerHTML = parentElement;
+        selectionMember.appendChild(optionElement);
       } catch (error) {
         console.log(error.toString());
       }
     });
-    // document.getElementById("outputarea").innerHTML = automationObject.parenth1;
-    swal(
-      "Extract  Data Process",
-      "Data has been processed successfully",
-      "success"
-    );
+  }
+
+  fetchParentMembers(ParentMode) {
+    automationObject.parenth = [];
+    //let parentMember = automationObject.dimensionParentStructure[automationObject.dimension][ParentMode];
+    document.getElementById("parenthvalue").innerHTML = ParentMode;
+    let parentMember = ParentMode;
+    let selectionMember = document.getElementById("parentmemberselect");
+    while (selectionMember.hasChildNodes()) {
+      selectionMember.removeChild(selectionMember.firstChild);
+    }
+    let openMember = document.createElement("option");
+    openMember.value = "All";
+    openMember.innerHTML = "All";
+    selectionMember.appendChild(openMember);
+
+    automationObject.masterDataOutput.forEach((element) => {
+      try {
+        let parentElement = element[parentMember].toString();
+        // .replace('"', "")
+        // .replace('"', "");
+        if (!automationObject.parenth.includes(parentElement)) {
+          automationObject.parenth.push(parentElement);
+          let optionElement = document.createElement("option");
+          optionElement.value = parentElement;
+          optionElement.innerHTML = parentElement;
+          optionElement.dataToken = parentElement;
+          selectionMember.appendChild(optionElement);
+        }
+      } catch (error) {
+        console.log(error.toString() + parentMember);
+      }
+    });
+  }
+
+  // INTERNAL FUNCTIONS -----------------
+  findMemberByID(member) {
+    return member["ID"] == document.getElementById("parentmemberselect").value;
+  }
+
+  // ----------------------------------
+
+  fetchParentMemberDetails(member, parenth) {
+    // finding its parent
+    let parentDisplaySpan = document.getElementById("valuer1");
+    try {
+      let parent_member = automationObject.masterDataOutput.find(
+        this.findMemberByID
+      );
+      let checkDim = document.getElementById("parentselect").value.toString();
+      console.log(parent_member[checkDim]);
+      if (parent_member[checkDim].length > 0) {
+        parentDisplaySpan.classList.remove("bg-danger");
+        parentDisplaySpan.classList.add("bg-success");
+        parentDisplaySpan.innerHTML = parent_member[checkDim];
+      } else {
+        parentDisplaySpan.classList.remove("bg-success");
+        parentDisplaySpan.classList.add("bg-danger");
+        parentDisplaySpan.innerHTML = "No parent member";
+      }
+    } catch (error) {
+      parentDisplaySpan.classList.remove("bg-success");
+      parentDisplaySpan.classList.add("bg-danger");
+      parentDisplaySpan.innerHTML = "No parent member";
+    }
+  }
+
+  // MAXEFFORT data function  -- RECURSIVE member -------------------------------------------------
+  findingWhetherItIsAParent(checkMember) {
+    return automationObject.parenth.includes(checkMember);
+  }
+  determineTheTree(member, baseDivTag) {
+    let base = document.getElementById(baseDivTag.toString());
+    // removing old members from the list
+    let selectionMember = baseDivTag;
+    while (selectionMember.hasChildNodes()) {
+      selectionMember.removeChild(selectionMember.firstChild);
+    }
+    let listOrder = document.createElement("ul");
+    let members = [];
+    console.log("Tree : " + member);
+    automationObject.masterDataOutput.forEach((element) => {
+      let listMembers = document.createElement("li");
+      if (element[document.getElementById("parentselect").value] == member) {
+      //  members.push(element["ID"]);
+        let text = document.createTextNode(element["ID"].toString());
+        listMembers.appendChild(text)
+        listOrder.appendChild(listMembers);
+        if (
+          automationObject.masterDataOutput.filter(this.findingWhetherItIsAParent)
+        ) {
+          let newListMembers = document.createElement("li");
+          let spanCaret = document.createElement("span").classList.add("box")
+          console.log('parent found')
+          listOrder.appendChild(
+            this.determineTheTree(element["ID"].toString(), newListMembers)
+         );
+        }
+        
+      }
+    });
+    console.log(members);
+    return listOrder;
   }
 
   // Function to fetch the master data from the user
@@ -62,8 +178,16 @@ class AutomationScript {
     var fileVariable = new FileReader();
     fileVariable.onload = function (event) {
       function parseToCSV(str, headList, bodyList) {
-        const heading = str.slice(0, str.indexOf("\n")).split(",");
-        const body = str.slice(str.indexOf("\n") + 1).split("\n");
+        const heading = str
+          .replace('"', "")
+          .replace('"', "")
+          .slice(0, str.indexOf("\n"))
+          .split(",");
+        const body = str
+          .replace('"', "")
+          .replace('"', "")
+          .slice(str.indexOf("\n") + 1)
+          .split("\n");
         const arr = body.map(function (row) {
           const values = row.split(",");
           const el = heading.reduce(function (object, header, index) {
@@ -114,6 +238,8 @@ function activateMasterData() {
   showPopupAlert("Uploading and Processing the Dimension... please wait");
   let dimension = document.getElementById("masterData").value;
   document.getElementById("showdim").innerHTML = dimension;
+  document.getElementById("showdim1").innerHTML = dimension;
+  document.getElementById("showdim2").innerHTML = dimension;
   automationObject = new AutomationScript(dimension);
   if (dimension === "Select the master data template") {
     swal(
@@ -133,27 +259,59 @@ function activateMasterData() {
 
 function alphabetizeList() {
   var sel = $(listField);
-  var selected = sel.val(); // cache selected value, before reordering
+  var selected = sel.val();
   var opts_list = sel.find("option");
   opts_list.sort(function (a, b) {
     return $(a).text() > $(b).text() ? 1 : -1;
   });
   sel.html("").append(opts_list);
-  sel.val(selected); // set cached selected value
+  sel.val(selected);
 }
 
 function processMasterData() {
+  // ------------------  PROCESS BUTTON
   showPopupAlert("Processing the dimension, please wait....");
   let outputArea = document.getElementById("outputarea");
-  automationObject.generateIcons(outputArea);
-  automationObject.fetchParentH1();
+  //automationObject.generateIcons(outputArea);
+  automationObject.populateParentList();
   //alphabetizeList("select.parenth1select option");
   hidePopupAlert();
+  swal(
+    "Extract  Data Process",
+    "Data has been processed successfully",
+    "success"
+  );
 }
 
-// -----------------------------------------------------------   automationObject.generateIcons()
+function fetchParentMemberFromSelection() {
+  // ----- On change ------ PARENT select dropdown
+  automationObject.fetchParentMembers(
+    document.getElementById("parentselect").value
+  );
+}
+
+function fetchParentMemberDetails() {
+  automationObject.fetchParentMemberDetails(
+    document.getElementById("parentmemberselect").value,
+    document.getElementById("parentselect").value
+  );
+}
+
+function generateTree() {
+  let outputarea = document.getElementById("outputarea");
+  let divmember = document.createElement("div");
+  divmember.appendChild(
+    automationObject.determineTheTree(
+      document.getElementById("parentmemberselect").value,
+      document.getElementById("outputarea")
+    )
+  );
+  outputarea.appendChild(divmember);
+}
+
 const getDataFormTemp = document.getElementById("getDataForm");
 getDataFormTemp.addEventListener("submit", function (e) {
+  //------------------------------ UPLOAD BUTTON
   e.preventDefault();
   activateMasterData();
 });
