@@ -14,6 +14,7 @@ class AutomationScript {
     this.headingPart = new Array();
     this.bodyPart = {};
     this.parentcheck = ["1"];
+    this.totalBaseMember = 0;
     this.dimensionParentStructure = {
       ENTITY: [
         "Management",
@@ -25,6 +26,7 @@ class AutomationScript {
         "JV Equity Acc",
       ],
       FLOW: ["PARENTH1", "PARENTH2", "PARENTH3", "PARENTH4"],
+      ACCOUNT: ["PARENTH1", "PARENTH2", "PARENTH3", "PARENTH4"],
     };
   }
 
@@ -86,13 +88,14 @@ class AutomationScript {
     automationObject.masterDataOutput.forEach((element) => {
       try {
         let parentElement = element[parentMember].toString();
+        let memberDesc = element["Description"].toString();
         // .replace('"', "")
         // .replace('"', "");
         if (!automationObject.parenth.includes(parentElement)) {
           automationObject.parenth.push(parentElement);
           let optionElement = document.createElement("option");
           optionElement.value = parentElement;
-          optionElement.innerHTML = parentElement;
+          optionElement.innerHTML = parentElement + " - " + memberDesc;
           optionElement.dataToken = parentElement;
           selectionMember.appendChild(optionElement);
         }
@@ -138,38 +141,57 @@ class AutomationScript {
   findingWhetherItIsAParent(checkMember) {
     return automationObject.parenth.includes(checkMember);
   }
-  determineTheTree(member, baseDivTag) {
-    let base = document.getElementById(baseDivTag.toString());
-    // removing old members from the list
-    let selectionMember = baseDivTag;
-    while (selectionMember.hasChildNodes()) {
-      selectionMember.removeChild(selectionMember.firstChild);
-    }
+  determineTheTree(member) {
     let listOrder = document.createElement("ul");
     let members = [];
     console.log("Tree : " + member);
+    var checkCount = 0;
     automationObject.masterDataOutput.forEach((element) => {
       let listMembers = document.createElement("li");
       if (element[document.getElementById("parentselect").value] == member) {
-      //  members.push(element["ID"]);
-        let text = document.createTextNode(element["ID"].toString());
-        listMembers.appendChild(text)
-        listOrder.appendChild(listMembers);
-        if (
-          automationObject.masterDataOutput.filter(this.findingWhetherItIsAParent)
-        ) {
-          let newListMembers = document.createElement("li");
-          let spanCaret = document.createElement("span").classList.add("box")
-          console.log('parent found')
-          listOrder.appendChild(
-            this.determineTheTree(element["ID"].toString(), newListMembers)
-         );
+        //  members.push(element["ID"]);
+        let text = document.createTextNode(
+          element["ID"].toString() +
+            " - " +
+            element["Description"].toString() +
+            "  "
+        );
+        listMembers.appendChild(text);
+
+        try {
+          let currency = document.createElement("span");
+          //  <span class="badge bg-primary">Primary</span>
+          currency.classList.add("badge");
+          currency.classList.add("bg-secondary");
+          currency.classList.add("rounded-pill");
+          let curr = document.createTextNode(element["Currency"].toString());
+          currency.appendChild(curr);
+          listMembers.appendChild(currency);
+          if (curr.length > 1) {
+            automationObject.totalBaseMember++;
+          }
+        } catch (error) {
+          console.log(error.toString());
         }
-        
+        listOrder.appendChild(listMembers);
+        checkCount++;
+        if (
+          automationObject.masterDataOutput.filter(
+            this.findingWhetherItIsAParent
+          )
+        ) {
+          console.log("parent found");
+          listMembers.appendChild(
+            this.determineTheTree(element["ID"].toString())
+          );
+        }
       }
+      document.getElementById("valuer2").innerHTML =
+        automationObject.totalBaseMember.toString() + " members";
     });
+    let useless = document.createElement("span");
     console.log(members);
-    return listOrder;
+    return checkCount > 0 ? listOrder : useless;
   }
 
   // Function to fetch the master data from the user
@@ -299,14 +321,22 @@ function fetchParentMemberDetails() {
 
 function generateTree() {
   let outputarea = document.getElementById("outputarea");
+  automationObject.totalBaseMember = 0;
+  document.getElementById("showMember").innerHTML = document
+    .getElementById("parentmemberselect")
+    .value.toString();
+  let selectionMember = outputarea;
+  while (selectionMember.hasChildNodes()) {
+    selectionMember.removeChild(selectionMember.firstChild);
+  }
   let divmember = document.createElement("div");
   divmember.appendChild(
     automationObject.determineTheTree(
-      document.getElementById("parentmemberselect").value,
-      document.getElementById("outputarea")
+      document.getElementById("parentmemberselect").value
     )
   );
   outputarea.appendChild(divmember);
+  loadFolder();
 }
 
 const getDataFormTemp = document.getElementById("getDataForm");
@@ -315,3 +345,21 @@ getDataFormTemp.addEventListener("submit", function (e) {
   e.preventDefault();
   activateMasterData();
 });
+
+function loadFolder() {
+  $(document).ready(function () {
+    var allFolders = $(".directory-list li > ul");
+    allFolders.each(function () {
+      var folderAndName = $(this).parent();
+      folderAndName.addClass("folder");
+      var backupOfThisFolder = $(this);
+      $(this).remove();
+      folderAndName.wrapInner("<a href='#' />");
+      folderAndName.append(backupOfThisFolder);
+      folderAndName.find("a").click(function (e) {
+        $(this).siblings("ul").slideToggle("slow");
+        e.preventDefault();
+      });
+    });
+  });
+}

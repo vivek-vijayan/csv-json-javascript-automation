@@ -16,9 +16,6 @@
   <script src="scripts/jquery-csv.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-  <link rel="stylesheet" href="node_modules/mdbootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="node_modules/mdbootstrap/css/mdb.min.css">
-  <link rel="stylesheet" href="node_modules/mdbootstrap/css/style.css">
 </head>
 <style>
   /* Google chrome */
@@ -58,7 +55,7 @@
   }
 </style>
 
-<body style="background-color:rgb(232, 251, 255)">
+<body style="background-color:rgb(229, 248, 255)">
   <nav class="navbar navbar-dark bg-dark" style="position: fixed; top:0px; width: 100%; z-index: 10;">
     <div class="container-fluid">
       <a class="navbar-brand">
@@ -146,6 +143,7 @@
                 <option selected>Select the master data template</option>
                 <option value="ENTITY">ENTITY</option>
                 <option value="FLOW">FLOW</option>
+                <option value="ACCOUNT">ACCOUNT</option>
               </select>
             </div>
             <div class="col-sm-7">
@@ -210,26 +208,10 @@
                 <div class="mb-3" id="entity-only">
                   <label for="formGroupExampleInput" class="form-label"> <span id="showdim1"
                       style="color:crimson"></span>
-                    <h6><span id="showdim2" style="color:crimson"></span> Detail filter</h6>
+                    <h6> Options</h6>
                   </label>
-                  <br>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="baselevel"
-                      value="option1">
-                    <label class="form-check-label" for="inlineRadio1">Base level</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" checked name="inlineRadioOptions" id="nodelevel"
-                      value="option2">
-                    <label class="form-check-label" for="inlineRadio2">Node level</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="divisionlevel"
-                      value="option3">
-                    <label class="form-check-label" for="inlineRadio3">Division level</label>
-                  </div>
                 </div>
-                <button class="btn btn-sm" onclick="generateTree()">Tree</button>
+                <button class="btn btn-sm btn-success" onclick="generateTree()">Generate Tree</button>
               </div>
             </div>
           </div>
@@ -241,12 +223,12 @@
         <div class="card" style="width: 20rem;">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
-              <h6><span style="color:crimson" id="parenthvalue"></span> Parent :
+              <h6 style="font-size: 15px;"><span style="color:crimson" id="parenthvalue"></span> Parent :
                 <span class="badge  bg-danger" id="valuer1">...</span>
               </h6>
             </li>
             <li class="list-group-item">
-              <h6> Total Base members : <span class="badge  bg-danger" id="valuer2">...</span>
+              <h6 style="font-size: 15px;"> Total Base members : <span class="badge  bg-danger" id="valuer2">...</span>
               </h6>
             </li>
 
@@ -256,105 +238,17 @@
       </div>
     </div>
 
-
-    <div class="row">
-      <div id="outputarea"></div>
-    </div>
-
-
-    <div class="treeview-colorful w-20 border border-secondary mx-4 my-4">
-      <h6 class="pt-3 pl-3">Folders</h6>
-      <hr>
-      <ul class="treeview-colorful-list mb-3">
-        <li class="treeview-colorful-items">
-          <a class="treeview-colorful-items-header">
-            <i class="fas fa-plus-circle"></i>
-            <span><i class="far fa-envelope-open ic-w mx-1"></i>Mail</span>
-          </a>
-          <ul class="nested">
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-bell ic-w mr-1"></i>Offers
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-address-book ic-w mr-1"></i>Contacts
-            </li>
-            <li class="treeview-colorful-items">
-              <a class="treeview-colorful-items-header">
-                <i class="fas fa-plus-circle"></i>
-                <span><i class="far fa-calendar-alt ic-w mx-1"></i>Calendar</span></a>
-              <ul class="nested">
-                <li>
-                  <div class="treeview-colorful-element"><i class="far fa-clock ic-w mr-1"></i>Deadlines
-                </li>
-                <li>
-                  <div class="treeview-colorful-element"><i class="fas fa-users ic-w mr-1"></i>Meetings
-                </li>
-                <li>
-                  <div class="treeview-colorful-element"><i class="fas fa-basketball-ball ic-w mr-1"></i>Workouts
-                </li>
-                <li>
-                  <div class="treeview-colorful-element"><i class="fas fa-mug-hot ic-w mr-1"></i>Events
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li class="treeview-colorful-items">
-          <a class="treeview-colorful-items-header">
-            <i class="fas fa-plus-circle"></i>
-            <span><i class="far fa-folder-open ic-w mx-1"></i>Inbox</span>
-          </a>
-          <ul class="nested">
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-folder-open ic-w mr-1"></i>Admin
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-folder-open ic-w mr-1"></i>Corporate
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-folder-open ic-w mr-1"></i>Finance
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-folder-open ic-w mr-1"></i>Other
-            </li>
-          </ul>
-        </li>
-        <li class="treeview-colorful-items">
-          <a class="treeview-colorful-items-header">
-            <i class="fas fa-plus-circle"></i>
-            <span><i class="far fa-gem mx-1"></i>Favourites</span>
-          </a>
-          <ul class="nested">
-            <li>
-              <div class="treeview-colorful-element"><i class="fas fa-pepper-hot ic-w mr-1"></i>Restaurants
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="far fa-eye ic-w mr-1"></i>Places
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="fas fa-gamepad ic-w mr-1"></i>Games
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="fas fa-cocktail ic-w mr-1"></i>Coctails
-            </li>
-            <li>
-              <div class="treeview-colorful-element"><i class="fas fa-pizza-slice ic-w mr-1"></i>Food
-            </li>
-          </ul>
-        </li>
-        <li>
-          <div class="treeview-colorful-element"><i class="far fa-comment ic-w mr-1"></i>Notes
-        </li>
-        <li>
-          <div class="treeview-colorful-element"><i class="fas fa-cogs ic-w mr-1"></i>Settings
-        </li>
-        <li>
-          <div class="treeview-colorful-element"><i class="fas fa-desktop ic-w mr-1"></i>Devices
-        </li>
-        <li>
-          <div class="treeview-colorful-element"><i class="fas fa-trash-alt ic-w mr-1"></i>Deleted Items
-        </li>
-      </ul>
+    <div class="row" style="margin-top: 20px">
+      <div class="col-sm-8">
+        <div class="card" style="width: 48rem;">
+          <div class="card-body">
+            <h5 class="card-title"><span id="showdim2" style="color:crimson"></span> Parent Member Heirarchy</h5>
+            <br>
+            <h6 class="card-subtitle mb-2 text-danger" id="showMember">...</h6>
+            <div id="outputarea" class="directory-list"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -372,12 +266,10 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>
-  <script type="text/javascript" src="node_modules/mdbootstrap/js/jquery.min.js"></script>
-  <script type="text/javascript" src="node_modules/mdbootstrap/js/popper.min.js"></script>
-  <script type="text/javascript" src="node_modules/mdbootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="node_modules/mdbootstrap/js/mdb.min.js"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script src="scripts/text-animation.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="scripts/directory.js"></script>
   <script src="scripts/automation-script.js"></script>
 
 </body>
