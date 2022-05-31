@@ -28,6 +28,8 @@ class AutomationScript {
       FLOW: ["PARENTH1", "PARENTH2", "PARENTH3", "PARENTH4"],
       ACCOUNT: ["PARENTH1", "PARENTH2", "PARENTH3", "PARENTH4"],
     };
+    this.JVPCProperty = "To indicate member of the JV_EA";
+    this.EAPCProperty = "JV_ACC";
   }
 
   generateIcons(outputArea) {
@@ -95,12 +97,13 @@ class AutomationScript {
           automationObject.parenth.push(parentElement);
           let optionElement = document.createElement("option");
           optionElement.value = parentElement;
-          optionElement.innerHTML = parentElement + " - " + memberDesc;
+          optionElement.setAttribute("data-sub-text", memberDesc);
+          optionElement.innerHTML = parentElement;
           optionElement.dataToken = parentElement;
           selectionMember.appendChild(optionElement);
         }
       } catch (error) {
-        console.log(error.toString() + parentMember);
+        console.log(error.toString() + parentMember.toString());
       }
     });
   }
@@ -158,6 +161,7 @@ class AutomationScript {
         );
         listMembers.appendChild(text);
 
+        // Currency
         try {
           let currency = document.createElement("span");
           //  <span class="badge bg-primary">Primary</span>
@@ -173,6 +177,33 @@ class AutomationScript {
         } catch (error) {
           console.log(error.toString());
         }
+
+        // JV PC check
+        try {
+          if (element[automationObject.JVPCProperty].toString() === "Y") {
+            let JVPC = document.createElement("span");
+            JVPC.classList.add("badge");
+            JVPC.classList.add("bg-danger");
+            JVPC.classList.add("rounded-pill");
+            let jv = document.createTextNode("JV PC");
+            JVPC.appendChild(jv);
+            listMembers.appendChild(JVPC);
+            if (element[automationObject.JVPCProperty].toString() === "Y") {
+              let EAPC = document.createElement("span");
+              EAPC.classList.add("badge");
+              EAPC.classList.add("bg-success");
+              EAPC.classList.add("rounded-pill");
+              let jv = document.createTextNode(
+                element[automationObject.EAPCProperty].toString()
+              );
+              EAPC.appendChild(jv);
+              listMembers.appendChild(EAPC);
+            }
+          }
+        } catch (error) {
+          console.log(error.toString());
+        }
+
         listOrder.appendChild(listMembers);
         checkCount++;
         if (
