@@ -13,37 +13,48 @@
   <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <!-- Manual load -->
+
 </head>
 
 <body>
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-2" style=" margin: 0px; padding: 0px;  ">
+    <div class="row" >
+      <div class="col-sm-2" style=" margin: 0px; padding: 0px; position: sticky; top: -10px;">
         <div style="padding: 30px 30px 30px 30px;">
-          <h1 class="display-6 title-text"> <span
+          <h5 class="display-6 title-text" style="font-size:xx-large;"> <span
               style="background-image: linear-gradient(to right top, #11d9dc, #00bbf2, #0099ff, #006dff, #121ceb); color: white;"><b>
                 SAP</b></span> BPC
-          </h1>
+          </h5>
           <small style="color:white; font-size: small;">Automation on Heirarchy</small>
         </div>
         <hr>
         <!-- Side Bar data collection -->
 
         <div style="margin: 10px">
-          <div style="margin:10px; height: fit-content;" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-            aria-controls="collapseExample">
+          <div style=" margin: 10px;" data-bs-toggle="collapse" href="#collapseExample" role="button"
+            aria-expanded="false" aria-controls="collapseExample">
             <p style="color:#1298eb"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-cloud-upload-fill" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
                   d="M8 0a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 4.095 0 5.555 0 7.318 0 9.366 1.708 11 3.781 11H7.5V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11h4.188C14.502 11 16 9.57 16 7.773c0-1.636-1.242-2.969-2.834-3.194C12.923 1.999 10.69 0 8 0zm-.5 14.5V11h1v3.5a.5.5 0 0 1-1 0z" />
-              </svg> <b>&nbsp; MASTER DATA</b>
+              </svg> <b>&nbsp;UPLOAD MASTER DATA</b>
             </p>
           </div>
-          <div class="collapse" id="collapseExample">
-            <hr style="color:white">
+          <div class="collapse show" id="collapseExample">
             <div style="margin-bottom: 20px">
-              <select class="form-select form-bpc" aria-label="Default select example">
-                <option selected>Select the master data template</option>
+              <small style="color: #3c6291; font-size:small; margin-bottom: 20px;">
+                Select the respective dimension
+              </small>
+            </div>
+
+            <div style="margin-bottom: 20px">
+              <select class="form-select form-bpc" onchange="toggleDesign()" aria-label="Default select example"
+                id="masterData" style=" font-size: 13px;">
+                <option selected>Select the dimension</option>
                 <option value="ENTITY">ENTITY</option>
                 <option value="FLOW">FLOW</option>
                 <option value="ACCOUNT">ACCOUNT</option>
@@ -51,11 +62,13 @@
             </div>
 
             <div style="margin-bottom: 20px">
-              <div class="input-group">
-                <input type="file" class="form-control  form-bpc" id="uploadedFile" accept=".csv"
-                  aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".csv" required /> 
-                <br>
-              </div>
+              <form id="getDataForm">
+                <div class="input-group">
+                  <input type="file" class="form-control  form-bpc" id="uploadedFile" accept=".csv"
+                    style=" font-size: 13px;" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".csv"
+                    required />
+                  <br>
+                </div>
             </div>
 
             <div style="margin-bottom: 20px">
@@ -68,7 +81,7 @@
                 Make sure the data is in .CSV format </small>
             </div>
 
-            <div class="input-group">
+            <div class="input-group" style="margin-bottom: 20px">
               <button class="bpc-button" type="submit" style="width:100vh" id="inputGroupFileAddon04">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-cloud-upload" viewBox="0 0 16 16">
@@ -79,12 +92,18 @@
                 </svg> Upload Data
               </button>
             </div>
+
+            </form>
+
             <hr style="color:white">
           </div>
 
         </div>
+
+
+
       </div>
-      <div class="col-sm-10">
+      <div class="col-sm-10" style="position: relative;">
         <div class="container">
           <div class="row">
             <div class="col-sm-12">
@@ -100,11 +119,13 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                       <li class="nav-item">
                         <a class="header-options dark-text" aria-current="page" style="display:flex" href="#"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            style="margin: 3px" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                            style="margin-top: 4px; margin-right:5px" xmlns="http://www.w3.org/2000/svg" width="16"
+                            height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                              d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
                             <path
-                              d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z" />
-                          </svg>Home</a>
+                              d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                          </svg> Refresh </a>
                       </li>
                       <li class="nav-item">
                         <a class="header-options dark-text" style="margin-right: 30px; display: flex;" href="#"><svg
@@ -115,36 +136,192 @@
                           </svg> How to use</a>
                       </li>
                     </ul>
-                    <form class="d-flex" style="flex: 1">
-                      <input class="form-control me-2" type="search"
+                    <div class="d-flex" style="flex: 1">
+                      <input list="search-list-show"
                         style="background-color:#0000001b; border: #ffffff solid 1px; color:white"
-                        placeholder="Member Search  eg. PC54321, PC7654321" aria-label="Search">
-                      <button class="bpc-button" type="submit">
-                        <span style="display: flex; padding:2px"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                            height="16" fill="currentColor" class="bi bi-search" style="margin: 4px;"
-                            viewBox="0 0 16 16">
-                            <path
-                              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                          </svg>Search</span></button>
-                    </form>
+                        class="form-select form-bpc" placeholder="Member Search ...  eg: PC12345, or description"
+                        name="browser" id="searchArea" onchange="updateSearchItemInParent()">
+                      <datalist id="search-list-show">
+                        <option class="form-bpc" value="PC12345 - ABCD">
+
+                      </datalist>
+
+                    </div>
                   </div>
                 </div>
               </nav>
             </div>
-            <div class="col-sm-12" style="padding: 50px; overflow-y: scroll; height: 600px;">
-              <small>Dimension</small>
-              <h4 class="display-6">
-                FLOW
-              </h4>
-              Total members: 2423
+            <div class="col-sm-12" style="padding: 30px; ">
+              <div class="row">
+                <div class="col-sm-3">
+                  <code>Dimension</code>
+                  <h4 class="display-6 line-1" id="showdim">
+                    Waiting..
+                  </h4>
+                  Total members: <span id="valuer2"></span>
+                </div>
+                <div class="col-sm-3" style="padding: 10px;">
+                  <small style="color: #3c6291;font-size:small;">Select the Heirarchy section</small>
+                  <div style="margin-top: 20px; width: 250px; font-size: 13px;">
+                    <select class="form-select form-bpc" aria-label="Default select example" id="parentselect"
+                      onchange="fetchParentMemberFromSelection()" style=" font-size: 13px;">
+                      <option selected>Select the heirarchy set</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3" style="padding: 10px;">
+                  <small style="color: #3c6291;font-size:small;">Select the parent member</small>
+                  <div style="margin-top: 20px; width: 250px; font-size: 13px;">
+                    <select class="form-select form-bpc" aria-label="Default select example" id="parentmemberselect"
+                      style=" font-size: 13px;">
+                      <option selected>Select the parent member</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-sm-3" style="padding: 10px;">
+                  <div style="padding-bottom: 20px">
+                    <small>Functionality</small>
+                  </div>
+                  <div class="row">
+                    <div class="btn-group btn-sm " role="group" aria-label="Basic example">
+                      <button type="button" class="btn btn-primary btn-sm  bpc-button" id="liveToastBtn"
+                        style="margin: 4px;" onclick="generateTree()">Tree</button>
+                      <button type="button" class="btn btn-primary btn-sm bpc-button"
+                        style="margin: 4px;">Middle</button>
+                      <button type="button" class="btn btn-primary btn-sm bpc-success-button"
+                        style="margin: 4px;">Download</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             </div>
 
-          </div>
 
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+              <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                  <img src="..." class="rounded me-2" alt="...">
+                  <strong class="me-auto">Bootstrap</strong>
+                  <small>11 mins ago</small>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                  Hello, world! This is a toast message.
+                </div>
+              </div>
+            </div>
+
+            <div class="row" style="/* overflow-y: scroll; height: 600px; padding-left: 30px; */">
+              <div class="col-sm-8">
+                <div class="row" style="margin-top: 20px">
+                  <div>
+                    <div>
+                      <div>
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <h5><span id="showdim2"></span>Member Heirarchy</h5>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="form-check form-switch" id="showMappingDiv" style="display: block;">
+                              <input class="form-check-input" type="checkbox" id="showMappingLinks"
+                                onchange="toggleMappingView()" checked>
+                              <label class="form-check-label" for="showMappingLinks">Show mapping links</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <br>
+                        <h6 class="card-subtitle mb-2" style="color:#d63384" id="showMember"></h6>
+                        <div id="outputarea" style="scroll-behavior: smooth;" class="directory-list">
+
+                          <!-- Temp file -->
+                          <div>
+                            <div style="padding: 40px; color: #3c6291;">
+                              <center>
+                                <h1 class="display-1">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
+                                    class="bi bi-diagram-3" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                      d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM0 11.5A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
+                                  </svg>
+                                </h1>
+                                <p>No heirarchy found, re-upload the file</p>
+                              </center>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div id="entity-related-stacks" style="display: none;">
+                  <h5 style="margin-bottom: 15px;">Stacks</h5>
+                  <hr>
+                  <p style="color:#d63384"><svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                    <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                    <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
+                  </svg>&nbsp; Currency stack</p>
+                  <div id="currency-stack" style="margin: 10px;"></div>
+                  <br>
+                  <p style="color:#d63384"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"/>
+                    <path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z"/>
+                  </svg>&nbsp; Company stack</p>
+                  <div id="company-stack" style="margin: 10px;">
+                    <div style="padding: 40px; color: #3c6291; display: block;">
+                      <center>
+                        <h1 class="display-6">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-tag" viewBox="0 0 16 16">
+                            <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
+                            <path
+                              d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1zm0 5.586 7 7L13.586 9l-7-7H2v4.586z" />
+                          </svg>
+                        </h1>
+                        <p>No Mapping detected</p>
+                      </center>
+                    </div>
+                  </div>
+
+
+                </div>
+                
+                <h5 style="margin-bottom: 15px;">Other Mapping</h5>
+                <hr>
+                <h6 id="mapping_name" style="color: rgb(0, 163, 233);">
+                </h6>
+                <div class="col-sm-12" style="/* overflow-y: scroll; height: 310px; margin: 20px; */">
+                  <div style="padding: 40px; color: #3c6291; display: block;" id="sad-face">
+                    <center>
+                      <h1 class="display-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
+                          class="bi bi-tag" viewBox="0 0 16 16">
+                          <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
+                          <path
+                            d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1zm0 5.586 7 7L13.586 9l-7-7H2v4.586z" />
+                        </svg>
+                      </h1>
+                      <p>No Mapping detected</p>
+                    </center>
+                  </div>
+                  <div id="jv_mapping">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+
+
 
 
 
@@ -155,9 +332,11 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
     crossorigin="anonymous"></script>
-  <script src="bootstrap/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="scripts/leader-line.min.js"></script>
+  <script src="scripts/automation-script.js"></script>
+
 </body>
 
 </html>

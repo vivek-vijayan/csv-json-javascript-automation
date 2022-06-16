@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: #011834;
   color: #ffffff;
@@ -5,6 +9,7 @@ body {
   font-family: "Monda", sans-serif;
   margin-left: 20px;
   margin-right: 20px;
+  font-size: 13px;
 }
 
 .mild-text {
@@ -61,28 +66,41 @@ select option {
   }
 }
 
-
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(to right top, #11d9dc, #00bbf2, #0099ff, #006dff, #121ceb);
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background-image: linear-gradient(to right top, #11d9dc, #00bbf2, #0099ff, #006dff, #121ceb);
-  }
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(128, 128, 128, 0);
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(
+    to right top,
+    #11d9dc,
+    #00bbf2,
+    #0099ff,
+    #006dff,
+    #121ceb
+  );
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(
+    to right top,
+    #11d9dc,
+    #00bbf2,
+    #0099ff,
+    #006dff,
+    #121ceb
+  );
+}
 
 .lg {
   font-size: large;
@@ -103,7 +121,14 @@ select option {
   padding: 5px;
   text-decoration: none;
   color: #ffffff;
-  background-image: linear-gradient(to right top, #11d9dc, #00bbf2, #0099ff, #006dff, #121ceb);
+  background-image: linear-gradient(
+    to right top,
+    #11d9dc,
+    #00bbf2,
+    #0099ff,
+    #006dff,
+    #121ceb
+  );
   border: #0000001b solid 1px;
   margin: 5px;
   border-radius: 5px;
@@ -113,7 +138,14 @@ select option {
 .bpc-button {
   padding: 5px;
   color: #ffffff;
-  background-image: linear-gradient(to right top, #11d9dc, #00bbf2, #0099ff, #006dff, #121ceb);
+  background-image: linear-gradient(
+    to right top,
+    #11d9dc,
+    #00bbf2,
+    #0099ff,
+    #006dff,
+    #121ceb
+  );
   border: #0000001b solid 1px;
   text-decoration: none;
   border-radius: 5px;
@@ -129,10 +161,71 @@ select option {
   transition: ease-in-out 0.1s;
 }
 
+.bpc-success-button {
+  padding: 5px;
+  color: #ffffff;
+  background-image: linear-gradient(
+    to right top,
+    #8441ae,
+    #a13aac,
+    #bc30a6,
+    #d5239d,
+    #eb1291
+  );
+  border: #0000001b solid 1px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: ease-in-out 0.1s;
+}
+.bpc-success-button:hover {
+  padding: 5px;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #ffffff;
+  border: #0000001b solid 1px;
+  border-radius: 5px;
+  transition: ease-in-out 0.1s;
+}
 .search {
   background-color: #e8ebee;
   color: #1b242e;
   padding: 5px;
   border-radius: 20px;
   flex: 2;
+}
+
+.spacingg {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sidebaroptions {
+  background-color: #0000001b;
+}
+
+.line-1 {
+  width: 5em;
+  overflow: hidden;
+}
+
+/* Animation */
+.anim-typewriter {
+  animation: typewriter 1s steps(44) 1s 1 normal both,
+    blinkTextCursor 500ms steps(44) infinite normal;
+}
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 5em;
+  }
+}
+@keyframes blinkTextCursor {
+  from {
+    border-right-color: rgba(255, 255, 255, 0.75);
+  }
+  to {
+    border-right-color: transparent;
+  }
 }

@@ -74,14 +74,14 @@ ul, #myUL {
   
   .directory-list li {
     list-style: none;
-    color: #252525;
+    color: #ffffff;
     font-size: 13px;
     font-weight: normal;
   }
   
   .directory-list a {
     border-bottom: 1px solid transparent;
-    color: #888;
+    color: rgb(255, 255, 255);
     text-decoration: none;
     transition: all 0.2s ease;
   }
@@ -93,7 +93,7 @@ ul, #myUL {
   
   .directory-list .folder,
   .directory-list .folder > a {
-    color: #777;
+    color: rgb(0, 163, 233);
     font-weight: bold;
   }
   
