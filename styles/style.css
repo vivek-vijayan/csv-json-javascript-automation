@@ -229,3 +229,8 @@ select option {
     border-right-color: transparent;
   }
 }
+
+
+.dark {
+  background-color: #0096d5;
+}

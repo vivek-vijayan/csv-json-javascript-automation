@@ -1,7 +1,7 @@
 // master data upload - Script
 
 class AutomationScript {
-  static masterDataOutput = "";
+  masterDataOutput = "";
 
   // Static member
   static parentcheck = [];
@@ -19,6 +19,15 @@ class AutomationScript {
     this.jv_map_list_with_dict = [];
     this.companyList = [];
     this.currencyList = [];
+    this.pubList = [];
+    this.geoList = [];
+    this.segList = [];
+
+    this.pubListSelectedForFilter = [];
+    this.geoListSelectedForFilter = [];
+    this.segListSelectedForFilter = [];
+    this.companyListSelectedForFilter = [];
+    this.currencyListSelectedForFilter = [];
 
     // line variables
     this.lineVariables = [];
@@ -169,25 +178,70 @@ class AutomationScript {
 
   // Determining the tree and the respective mapping in the heirarchy
   determineTheTree(member) {
+    automationObject.updateStacks();
     automationObject.removeArrowFunction();
     let listOrder = document.createElement("ul");
     let jv_mapping_list = document.createElement("ul");
     let members = [];
-    //console.log("Tree : " + member);
     var checkCount = 0;
 
     automationObject.masterDataOutput.forEach((element) => {
       let listMembers = document.createElement("li");
       if (element[document.getElementById("parentselect").value] == member) {
         //  members.push(element["ID"]);
-        let text = document.createTextNode(
-          element["ID"].toString() +
-            " - " +
-            element["Description"].toString() +
-            "  "
-        );
-        listMembers.appendChild(text);
+        var checkCC = "IDS";
+        var checkCur = "EAC";
+        var checkPUB = "PP";
+        var checkGEO = "GEO";
+        var checkSEG = "SEG";
 
+        try {
+          checkCC = element["COMP_CODE"].toString();
+        } catch (e) {}
+        try {
+          checkCur = element["Currency"].toString();
+        } catch (e) {}
+        try {
+          checkPUB = element["PUB"].toString();
+        } catch (e) {}
+        try {
+          checkSEG = element["SEGMENT"].toString();
+        } catch (e) {}
+        try {
+          checkGEO = element["Country for Segmental Reporting"].toString();
+        } catch (e) {}
+
+        let text = "";
+        if (automationObject.parenth.includes(element["ID"])) {
+          text = document.createTextNode(
+            element["ID"].toString() +
+              " - " +
+              element["Description"].toString() +
+              "  "
+          );
+          listMembers.appendChild(text);
+        }
+
+        if (
+          (automationObject.companyListSelectedForFilter.includes(checkCC) ||
+            automationObject.companyListSelectedForFilter.length == 0) &&
+          (automationObject.currencyListSelectedForFilter.includes(checkCur) ||
+            automationObject.currencyListSelectedForFilter.length == 0) &&
+          (automationObject.pubListSelectedForFilter.includes(checkPUB) ||
+            automationObject.pubListSelectedForFilter.length == 0) &&
+          (automationObject.geoListSelectedForFilter.includes(checkGEO) ||
+            automationObject.geoListSelectedForFilter.length == 0) &&
+          (automationObject.segListSelectedForFilter.includes(checkSEG) ||
+            automationObject.segListSelectedForFilter.length == 0)
+        ) {
+          text = document.createTextNode(
+            element["ID"].toString() +
+              " - " +
+              element["Description"].toString() +
+              "  "
+          );
+          listMembers.appendChild(text);
+        }
         // getting the company code stack
         try {
           if (!automationObject.companyList.includes(element["COMP_CODE"])) {
@@ -205,6 +259,34 @@ class AutomationScript {
           }
         } catch (e) {}
 
+        // getting the PUB code stack
+        try {
+          if (!automationObject.pubList.includes(element["PUB"])) {
+            automationObject.pubList.push(element["PUB"]);
+          }
+        } catch (e) {}
+
+        // getting the SEG code stack
+        try {
+          if (!automationObject.segList.includes(element["SEGMENT"])) {
+            automationObject.segList.push(element["SEGMENT"]);
+          }
+        } catch (e) {}
+
+        // getting the GEO stack
+        try {
+          if (
+            !automationObject.geoList.includes(
+              element["Country for Segmental Reporting"]
+            ) &&
+            element["Country for Segmental Reporting"] != "undefined"
+          ) {
+            automationObject.geoList.push(
+              element["Country for Segmental Reporting"]
+            );
+          }
+        } catch (e) {}
+
         // Currency
         try {
           let currency = document.createElement("span");
@@ -216,76 +298,94 @@ class AutomationScript {
           currency.appendChild(curr);
           listMembers.appendChild(currency);
           if (curr.length > 1) {
-            automationObject.totalBaseMember++;
           }
         } catch (error) {
           //console.log(error.toString());
         }
 
-        // JV PC check
-        try {
-          if (element[automationObject.JVPCProperty].toString() === "Y") {
-            let JVPC = document.createElement("span");
-            JVPC.classList.add("badge");
-            JVPC.classList.add("bg-danger");
-            JVPC.classList.add("rounded-pill");
-            JVPC.setAttribute("id", element["ID"].toString());
-            let jv = document.createTextNode("JV PC");
-            JVPC.appendChild(jv);
-            listMembers.appendChild(JVPC);
+        checkCount++;
+        if (
+          (automationObject.companyListSelectedForFilter.includes(checkCC) ||
+            automationObject.companyListSelectedForFilter.length == 0) &&
+          (automationObject.currencyListSelectedForFilter.includes(checkCur) ||
+            automationObject.currencyListSelectedForFilter.length == 0) &&
+          (automationObject.pubListSelectedForFilter.includes(checkPUB) ||
+            automationObject.pubListSelectedForFilter.length == 0) &&
+          (automationObject.geoListSelectedForFilter.includes(checkGEO) ||
+            automationObject.geoListSelectedForFilter.length == 0) &&
+          (automationObject.segListSelectedForFilter.includes(checkSEG) ||
+            automationObject.segListSelectedForFilter.length == 0)
+        ) {
+          // JV PC check
+          try {
             if (element[automationObject.JVPCProperty].toString() === "Y") {
-              let jv = document.createTextNode(
-                element[automationObject.EAPCProperty].toString()
-              );
+              let JVPC = document.createElement("span");
+              JVPC.classList.add("badge");
+              JVPC.classList.add("bg-danger");
+              JVPC.classList.add("rounded-pill");
+              JVPC.setAttribute("id", element["ID"].toString());
+              let jv = document.createTextNode("JV PC");
+              JVPC.appendChild(jv);
+              listMembers.appendChild(JVPC);
+              if (element[automationObject.JVPCProperty].toString() === "Y") {
+                let jv = document.createTextNode(
+                  element[automationObject.EAPCProperty].toString()
+                );
 
-              // JV EA Dict mapping to show arrow
-              let temp_dict = {
-                jv: element["ID"].toString(),
-                ea: "des" + element["ID"].toString(),
-              };
+                // JV EA Dict mapping to show arrow
+                let temp_dict = {
+                  jv: element["ID"].toString(),
+                  ea: "des" + element["ID"].toString(),
+                };
 
-              automationObject.jv_map_list_with_dict.push(temp_dict);
-              // EAPC.appendChild(jv);
-              // listMembers.appendChild(EAPC);
+                automationObject.jv_map_list_with_dict.push(temp_dict);
+                // EAPC.appendChild(jv);
+                // listMembers.appendChild(EAPC);
 
-              // Updating the JV PC mapping list in the respective area
-              console.log("Got EA");
-              document.getElementById("mapping_name").innerHTML = "JV Mapping";
-              let jv_mapping_item = document.createElement("li");
-              console.log("Adding JV member in the mapping area");
+                // Updating the JV PC mapping list in the respective area
 
-              let jv_a_link = document.createElement("a");
-              let link_data = document.createTextNode(element["ID"].toString());
-              jv_a_link.appendChild(link_data);
-              jv_a_link.setAttribute("href", "#" + element["ID"].toString());
-              jv_a_link.setAttribute("id", "des" + element["ID"].toString());
-              let jv_mem = document.createTextNode(
-                "  " + element[automationObject.EAPCProperty].toString()
-              );
+                document.getElementById("mapping_name").innerHTML =
+                  "JV Mapping";
+                let jv_mapping_item = document.createElement("li");
+                let jv_a_link = document.createElement("a");
+                let link_data = document.createTextNode(
+                  element["ID"].toString()
+                );
+                jv_a_link.appendChild(link_data);
+                jv_a_link.setAttribute("href", "#" + element["ID"].toString());
+                jv_a_link.setAttribute("id", "des" + element["ID"].toString());
+                let jv_mem = document.createTextNode(
+                  "  " + element[automationObject.EAPCProperty].toString()
+                );
 
-              let EAPC = document.createElement("span");
-              EAPC.classList.add("badge");
-              EAPC.classList.add("bg-success");
-              EAPC.classList.add("rounded-pill");
-              EAPC.classList.add("spacingg");
-              let content = document.createTextNode("EA PC");
-              EAPC.appendChild(content);
+                let EAPC = document.createElement("span");
+                EAPC.classList.add("badge");
+                EAPC.classList.add("bg-success");
+                EAPC.classList.add("rounded-pill");
+                EAPC.classList.add("spacingg");
+                let content = document.createTextNode("EA PC");
+                EAPC.appendChild(content);
 
-              jv_mapping_item.appendChild(jv_a_link);
-              jv_mapping_item.appendChild(jv_mem);
-              jv_mapping_item.appendChild(EAPC);
-              jv_mapping_list.appendChild(jv_mapping_item);
-              automationObject.jv_count += 1;
-              let sad_face = document.getElementById("sad-face");
-              sad_face.style.display = "none";
+                jv_mapping_item.appendChild(jv_a_link);
+                jv_mapping_item.appendChild(jv_mem);
+                jv_mapping_item.appendChild(EAPC);
+                jv_mapping_list.appendChild(jv_mapping_item);
+                automationObject.jv_count += 1;
+                let sad_face = document.getElementById("sad-face");
+                sad_face.style.display = "none";
+              }
             }
+          } catch (error) {
+            // console.log(error);
           }
-        } catch (error) {
-          console.log(error);
+          listOrder.appendChild(listMembers);
         }
 
-        listOrder.appendChild(listMembers);
-        checkCount++;
+        if (automationObject.parenth.includes(element["ID"])) {
+          listOrder.appendChild(listMembers);
+        } else {
+          automationObject.totalBaseMember++;
+        }
         if (
           automationObject.masterDataOutput.filter(
             this.findingWhetherItIsAParent
@@ -296,18 +396,20 @@ class AutomationScript {
             this.determineTheTree(element["ID"].toString())
           );
         }
-      }
 
-      document.getElementById("valuer2").innerHTML =
-        automationObject.totalBaseMember.toString() + " members";
+        // automationObject.companyListSelectedForFilter = [];
+        // automationObject.updateStacks();
+
+        document.getElementById("valuer2").innerHTML =
+          automationObject.totalBaseMember.toString() + " members";
+      }
     });
 
     let jv_mapping_div = document.getElementById("jv_mapping");
     jv_mapping_div.appendChild(jv_mapping_list);
-    console.log(automationObject.jv_count);
-    console.log(automationObject.jv_count_check);
+
     let useless = document.createElement("span");
-    
+
     return checkCount > 0 ? listOrder : useless;
   }
 
@@ -332,7 +434,7 @@ class AutomationScript {
 
         //myLine.show('fade', { duration: 300, timing: "linear" });
         automationObject.lineVariables.push(myLine);
-        document.getElementById("showMappingLinks").checked = true;
+        document.getElementById("showMappingLinks").checked = false;
       }
       // automationObject.jv_map_list_with_dict = [];
     } catch (e) {}
@@ -424,6 +526,7 @@ class AutomationScript {
   }
 
   updateStacks() {
+    // CURRENCY
     let selectionMember = document.getElementById("currency-stack");
     while (selectionMember.hasChildNodes()) {
       selectionMember.removeChild(selectionMember.firstChild);
@@ -432,14 +535,26 @@ class AutomationScript {
     for (let i = 0; i < automationObject.currencyList.length; i++) {
       let span_currency = document.createElement("span");
       span_currency.classList.add("badge");
-      span_currency.classList.add("bg-primary");
-      //span_currency.classList.add("rounded-pill");
+      span_currency.setAttribute("id", automationObject.currencyList[i]);
+      span_currency.setAttribute("onclick", "selectForCurrencyFilter(this.id)");
+
+      if (
+        automationObject.currencyListSelectedForFilter.includes(
+          automationObject.currencyList[i]
+        )
+      ) {
+        span_currency.classList.add("bg-danger");
+      } else {
+        span_currency.classList.add("bg-primary");
+      }
+      span_currency.setAttribute("selected-for-filter1", "no");
       span_currency.classList.add("spacingg");
       let content = document.createTextNode(automationObject.currencyList[i]);
       span_currency.appendChild(content);
       document.getElementById("currency-stack").appendChild(span_currency);
     }
 
+    // COMPANY CODE
     let selectionMember2 = document.getElementById("company-stack");
     while (selectionMember2.hasChildNodes()) {
       selectionMember2.removeChild(selectionMember2.firstChild);
@@ -447,13 +562,108 @@ class AutomationScript {
 
     for (let i = 0; i < automationObject.companyList.length; i++) {
       let span_company = document.createElement("span");
+      span_company.setAttribute("id", automationObject.companyList[i]);
+      span_company.setAttribute("onclick", "selectForCompanyFilter(this.id)");
       span_company.classList.add("badge");
-      span_company.classList.add("bg-primary");
+      if (
+        automationObject.companyListSelectedForFilter.includes(
+          automationObject.companyList[i]
+        )
+      ) {
+        span_company.classList.add("bg-danger");
+      } else {
+        span_company.classList.add("bg-primary");
+      }
+      span_company.setAttribute("selected-for-filter", "no");
       //span_company.classList.add("rounded-pill");
       span_company.classList.add("spacingg");
       let content = document.createTextNode(automationObject.companyList[i]);
       span_company.appendChild(content);
       document.getElementById("company-stack").appendChild(span_company);
+    }
+
+    // PUB
+    let selectionMember3 = document.getElementById("pub-stack");
+    while (selectionMember3.hasChildNodes()) {
+      selectionMember3.removeChild(selectionMember3.firstChild);
+    }
+
+    for (let i = 0; i < automationObject.pubList.length; i++) {
+      let span_pub = document.createElement("span");
+      span_pub.classList.add("badge");
+      span_pub.setAttribute("id", automationObject.pubList[i]);
+      span_pub.setAttribute("onclick", "selectForPUBFilter(this.id)");
+
+      if (
+        automationObject.pubListSelectedForFilter.includes(
+          automationObject.pubList[i]
+        )
+      ) {
+        span_pub.classList.add("bg-danger");
+      } else {
+        span_pub.classList.add("bg-primary");
+      }
+      span_pub.setAttribute("selected-for-filter2", "no");
+      span_pub.classList.add("spacingg");
+      let content = document.createTextNode(automationObject.pubList[i]);
+      span_pub.appendChild(content);
+      document.getElementById("pub-stack").appendChild(span_pub);
+    }
+
+    // GEO
+    let selectionMember4 = document.getElementById("geo-stack");
+    while (selectionMember4.hasChildNodes()) {
+      selectionMember4.removeChild(selectionMember4.firstChild);
+    }
+
+    for (let i = 0; i < automationObject.geoList.length; i++) {
+      let span_geo = document.createElement("span");
+      span_geo.classList.add("badge");
+      span_geo.setAttribute("id", automationObject.geoList[i]);
+      span_geo.setAttribute("onclick", "selectForGEOFilter(this.id)");
+
+      if (
+        automationObject.geoListSelectedForFilter.includes(
+          automationObject.geoList[i]
+        )
+      ) {
+        span_geo.classList.add("bg-danger");
+      } else {
+        span_geo.classList.add("bg-primary");
+      }
+      span_geo.setAttribute("selected-for-filter3", "no");
+      span_geo.classList.add("spacingg");
+      let content = document.createTextNode(automationObject.geoList[i]);
+      span_geo.appendChild(content);
+      document.getElementById("geo-stack").appendChild(span_geo);
+    }
+
+    // SEG
+    let selectionMember5 = document.getElementById("seg-stack");
+    while (selectionMember5.hasChildNodes()) {
+      selectionMember5.removeChild(selectionMember5.firstChild);
+    }
+
+    for (let i = 0; i < automationObject.segList.length; i++) {
+      let span_seg = document.createElement("span");
+      span_seg.classList.add("badge");
+      span_seg.setAttribute("id", automationObject.segList[i]);
+      span_seg.setAttribute("onclick", "selectForSEGFilter(this.id)");
+
+      if (
+        automationObject.segListSelectedForFilter.includes(
+          automationObject.segList[i]
+        )
+      ) {
+        span_seg.classList.add("bg-danger");
+      } else {
+        span_seg.classList.add("bg-primary");
+      }
+      span_seg.setAttribute("selected-for-filter4", "no");
+      span_seg.classList.add("spacingg");
+      let content = document.createTextNode(automationObject.segList[i]);
+      span_seg.appendChild(content);
+      document.getElementById("seg-stack").appendChild(span_seg);
     }
   }
 }
@@ -573,10 +783,12 @@ function generateTree() {
   loadFolder();
   automationObject.showArrowFunction();
   automationObject.updateStacks();
-  automationObject.currencyList = [];
+  //automationObject.currencyList = [];
 
   automationObject.arrowFunction();
   automationObject.jv_map_list_with_dict = [];
+  automationObject.companyList = [];
+  //automationObject.companyListSelectedForFilter = [];
 }
 
 const getDataFormTemp = document.getElementById("getDataForm");
@@ -623,4 +835,134 @@ function toggleMappingView() {
   } else {
     automationObject.showArrowFunction();
   }
+}
+
+// FILTERING THE COMPANY FILTER
+function selectForCompanyFilter(element) {
+  // Getting the member selected on the company
+  if (
+    document
+      .getElementById(element.toString())
+      .getAttribute("selected-for-filter") == "no"
+  ) {
+    automationObject.companyListSelectedForFilter.push(element);
+    document.getElementById(element.toString()).classList.remove("bg-primary");
+    document.getElementById(element.toString()).classList.add("bg-success");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter", "yes");
+  } else {
+    automationObject.companyListSelectedForFilter.pop(element);
+    document.getElementById(element.toString()).classList.remove("bg-success");
+    document.getElementById(element.toString()).classList.add("bg-primary");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter", "no");
+  }
+}
+
+function selectForCurrencyFilter(element) {
+  // Getting the member selected on the company
+  if (
+    document
+      .getElementById(element.toString())
+      .getAttribute("selected-for-filter1") == "no"
+  ) {
+    automationObject.currencyListSelectedForFilter.push(element);
+    document.getElementById(element.toString()).classList.remove("bg-primary");
+    document.getElementById(element.toString()).classList.add("bg-success");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter1", "yes");
+  } else {
+    automationObject.currencyListSelectedForFilter.pop(element);
+    document.getElementById(element.toString()).classList.remove("bg-success");
+    document.getElementById(element.toString()).classList.add("bg-primary");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter1", "no");
+  }
+}
+
+// FILTERING THE PUB
+function selectForPUBFilter(element) {
+  // Getting the member selected on the company
+  if (
+    document
+      .getElementById(element.toString())
+      .getAttribute("selected-for-filter2") == "no"
+  ) {
+    automationObject.pubListSelectedForFilter.push(element);
+    document.getElementById(element.toString()).classList.remove("bg-primary");
+    document.getElementById(element.toString()).classList.add("bg-success");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter2", "yes");
+  } else {
+    automationObject.pubListSelectedForFilter.pop(element);
+    document.getElementById(element.toString()).classList.remove("bg-success");
+    document.getElementById(element.toString()).classList.add("bg-primary");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter2", "no");
+  }
+}
+
+// FILTERING THE PUB
+function selectForGEOFilter(element) {
+  // Getting the member selected on the company
+  if (
+    document
+      .getElementById(element.toString())
+      .getAttribute("selected-for-filter3") == "no"
+  ) {
+    automationObject.geoListSelectedForFilter.push(element);
+    document.getElementById(element.toString()).classList.remove("bg-primary");
+    document.getElementById(element.toString()).classList.add("bg-success");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter3", "yes");
+  } else {
+    automationObject.geoListSelectedForFilter.pop(element);
+    document.getElementById(element.toString()).classList.remove("bg-success");
+    document.getElementById(element.toString()).classList.add("bg-primary");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter3", "no");
+  }
+}
+
+// FILTERING THE SEG
+function selectForSEGFilter(element) {
+  // Getting the member selected on the company
+  if (
+    document
+      .getElementById(element.toString())
+      .getAttribute("selected-for-filter4") == "no"
+  ) {
+    automationObject.segListSelectedForFilter.push(element);
+    document.getElementById(element.toString()).classList.remove("bg-primary");
+    document.getElementById(element.toString()).classList.add("bg-success");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter4", "yes");
+  } else {
+    automationObject.segListSelectedForFilter.pop(element);
+    document.getElementById(element.toString()).classList.remove("bg-success");
+    document.getElementById(element.toString()).classList.add("bg-primary");
+    document
+      .getElementById(element.toString())
+      .setAttribute("selected-for-filter4", "no");
+  }
+}
+
+// Clear filter
+function clearFilters() {
+  automationObject.companyListSelectedForFilter = [];
+  automationObject.currencyListSelectedForFilter = [];
+  automationObject.geoListSelectedForFilter = [];
+  automationObject.segListSelectedForFilter = [];
+  automationObject.pubListSelectedForFilter = [];
+  // automationObject.updateStacks();
+  generateTree();
 }
