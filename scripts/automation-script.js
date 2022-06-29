@@ -22,6 +22,9 @@ class AutomationScript {
     this.pubList = [];
     this.geoList = [];
     this.segList = [];
+    this.memberWithDescription = [];
+
+    this.onFilter = false;
 
     this.pubListSelectedForFilter = [];
     this.geoListSelectedForFilter = [];
@@ -110,10 +113,28 @@ class AutomationScript {
     openMember.innerHTML = "All";
     selectionMember.appendChild(openMember);
 
+    // Getting the description
+    automationObject.masterDataOutput.forEach((element) => {
+      try {
+        automationObject.memberWithDescription.push({
+          ID: element["ID"].toString(),
+          Desc: element["Description"].toString(),
+        });
+      } catch (e) {}
+    });
+
     automationObject.masterDataOutput.forEach((element) => {
       try {
         let parentElement = element[parentMember].toString();
-        let memberDesc = element["Description"].toString();
+        let memberDesc = "";
+
+        // Finding the description for the selected member
+        automationObject.memberWithDescription.forEach((element) => {
+          if (element["ID"] == parentElement) {
+            memberDesc = element["Desc"];
+          }
+        });
+
         // .replace('"', "")
         // .replace('"', "");
         if (!automationObject.parenth.includes(parentElement)) {
@@ -219,7 +240,9 @@ class AutomationScript {
               element["Description"].toString() +
               "  "
           );
-          listMembers.appendChild(text);
+          if (automationObject.onFilter) {
+            listMembers.appendChild(text);
+          }
         }
 
         if (
@@ -752,7 +775,14 @@ function fetchParentMemberDetails() {
   );
 }
 
+function generateTreeA() {
+  $("#toast").toast("show");
+  clearStack();
+  generateTree();
+}
+
 function generateTree() {
+  $(".toast").toast("show");
   automationObject.removeArrowFunction();
   let outputarea = document.getElementById("outputarea");
   automationObject.totalBaseMember = 0;
@@ -795,6 +825,7 @@ const getDataFormTemp = document.getElementById("getDataForm");
 getDataFormTemp.addEventListener("submit", function (e) {
   //------------------------------ UPLOAD BUTTON
   e.preventDefault();
+  $("#uploadinform").toast("show");
   activateMasterData();
 });
 
@@ -964,5 +995,19 @@ function clearFilters() {
   automationObject.segListSelectedForFilter = [];
   automationObject.pubListSelectedForFilter = [];
   // automationObject.updateStacks();
+  generateTree();
+}
+
+function clearStack() {
+  automationObject.onFilter = false;
+  automationObject.currencyList = [];
+  automationObject.pubList = [];
+  automationObject.companyList = [];
+  automationObject.segList = [];
+  automationObject.geoList = [];
+}
+
+function setfilter() {
+  automationObject.onFilter = true;
   generateTree();
 }
