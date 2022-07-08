@@ -10,6 +10,11 @@ body {
   margin-left: 20px;
   margin-right: 20px;
   font-size: 13px;
+  
+}
+
+.oncontent {
+  filter: blur(10px);
 }
 
 .mild-text {

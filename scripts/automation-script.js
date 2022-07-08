@@ -827,6 +827,7 @@ getDataFormTemp.addEventListener("submit", function (e) {
   e.preventDefault();
   $("#uploadinform").toast("show");
   activateMasterData();
+  fetchParentMemberFromSelection();
 });
 
 function loadFolder() {
